@@ -7,51 +7,36 @@ use std::{
     str::FromStr,
 };
 
-#[derive(Debug, Copy, Clone)]
-pub enum Challenge {
-    First,
-    Second,
-}
-
-impl fmt::Display for Challenge {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Challenge::First => write!(f, "first"),
-            Challenge::Second => write!(f, "second"),
-        }
-    }
-}
-
-fn input_path(ch: Challenge, day: usize) -> Result<String, AdventError> {
+fn input_path(day: usize) -> Result<String, AdventError> {
     if day == 0 || day > 25 {
         Err(AdventError::InvalidDay { day })
     } else {
-        Ok(format!("input/day{}_{}", day, ch))
+        Ok(format!("input/day{}", day))
     }
 }
 
-pub fn input(ch: Challenge, day: usize) -> Result<String, AdventError> {
-    let path = input_path(ch, day)?;
+pub fn input(day: usize) -> Result<String, AdventError> {
+    let path = input_path(day)?;
     read_to_string(&path).map_err(|e| AdventError::io(e, path))
 }
 
-pub fn parse_input<T: FromStr>(ch: Challenge, day: usize) -> Result<T, AdventError>
+pub fn parse_input<T: FromStr>(day: usize) -> Result<T, AdventError>
 where
     <T as FromStr>::Err: fmt::Display,
 {
-    let path = input_path(ch, day)?;
-    let iput = input(ch, day)?;
+    let path = input_path(day)?;
+    let iput = input(day)?;
 
     iput.parse()
         .map_err(|e| AdventError::input_parse::<T, String>(e, path, None))
 }
 
-pub fn parse_input_lines<T: FromStr>(ch: Challenge, day: usize) -> Result<Vec<T>, AdventError>
+pub fn parse_input_lines<T: FromStr>(day: usize) -> Result<Vec<T>, AdventError>
 where
     <T as FromStr>::Err: fmt::Display,
 {
-    let path = input_path(ch, day)?;
-    let iput = input(ch, day)?;
+    let path = input_path(day)?;
+    let iput = input(day)?;
 
     let mut parsed = vec![];
     for (ln, line) in iput.lines().enumerate() {
