@@ -5,13 +5,7 @@ use aoc2021::parse_input_lines;
 fn main() {
     let cmds: Vec<MovementCommand> = parse_input_lines(2).unwrap();
 
-    let (horizontal, depth) =
-        cmds.iter()
-            .fold((0, 0), |(horizontal, depth), command| match command.dir {
-                Direction::Forward => (horizontal + command.units, depth),
-                Direction::Up => (horizontal, depth - command.units),
-                Direction::Down => (horizontal, depth + command.units),
-            });
+    let (horizontal, depth) = part1(&cmds);
 
     println!(
         "Part One:\nDepth is {} and horizontal position {}. The product of those is {}",
@@ -20,16 +14,29 @@ fn main() {
         horizontal * depth
     );
 
-    let (horizontal, depth, aim) = cmds.iter().fold(
+    let (horizontal, depth, aim) = part2(&cmds);
+
+    println!("Part Two:\nDepth is {}, horizontal {}, and aim {}. The product of the horizontal and depth is {}", depth, horizontal, aim, depth * horizontal)
+}
+
+fn part1(cmds: &[MovementCommand]) -> (isize, isize) {
+    cmds.iter()
+        .fold((0, 0), |(horizontal, depth), command| match command.dir {
+            Direction::Forward => (horizontal + command.units, depth),
+            Direction::Up => (horizontal, depth - command.units),
+            Direction::Down => (horizontal, depth + command.units),
+        })
+}
+
+fn part2(cmds: &[MovementCommand]) -> (isize, isize, isize) {
+    cmds.iter().fold(
         (0, 0, 0),
         |(horizontal, depth, aim), command| match command.dir {
             Direction::Forward => (horizontal + command.units, command.units * aim + depth, aim),
             Direction::Up => (horizontal, depth, aim - command.units),
             Direction::Down => (horizontal, depth, aim + command.units),
         },
-    );
-
-    println!("Part Two:\nDepth is {}, horizontal {}, and aim {}. The product of the horizontal and depth is {}", depth, horizontal, aim, depth * horizontal)
+    )
 }
 
 struct MovementCommand {
@@ -71,5 +78,26 @@ impl FromStr for Direction {
             "down" => Ok(Self::Down),
             _ => Err(format!("'{}' is not a valid direction", s)),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn part_one_returns_incorrect_value() {
+        let cmds: Vec<MovementCommand> = parse_input_lines(2).unwrap();
+        let tup = part1(&cmds);
+
+        assert_eq!((1970, 916), tup)
+    }
+
+    #[test]
+    fn part_two_returns_incorrect_value() {
+        let cmds: Vec<MovementCommand> = parse_input_lines(2).unwrap();
+        let tup = part2(&cmds);
+
+        assert_eq!((1970, 1000556, 916), tup)
     }
 }
