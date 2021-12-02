@@ -14,11 +14,22 @@ fn main() {
             });
 
     println!(
-        "Depth is {} and horizontal position {}. The product of those is {}",
+        "Part One:\nDepth is {} and horizontal position {}. The product of those is {}",
         horizontal,
         depth,
         horizontal * depth
     );
+
+    let (horizontal, depth, aim) = cmds.iter().fold(
+        (0, 0, 0),
+        |(horizontal, depth, aim), command| match command.dir {
+            Direction::Forward => (horizontal + command.units, command.units * aim + depth, aim),
+            Direction::Up => (horizontal, depth, aim - command.units),
+            Direction::Down => (horizontal, depth, aim + command.units),
+        },
+    );
+
+    println!("Part Two:\nDepth is {}, horizontal {}, and aim {}. The product of the horizontal and depth is {}", depth, horizontal, aim, depth * horizontal)
 }
 
 struct MovementCommand {
