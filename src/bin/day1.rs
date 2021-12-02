@@ -1,7 +1,7 @@
-use aoc2021::parse_input_lines;
+use aoc2021::day_parse_lines;
 
 fn main() {
-    let values: Vec<usize> = parse_input_lines(1).unwrap();
+    let values: Vec<usize> = day_parse_lines!();
 
     let p1 = part1(&values);
     let p2 = part2(&values);
@@ -75,18 +75,20 @@ impl SlidingSum {
 
 #[cfg(test)]
 mod test {
+    use aoc2021::day_parse_lines;
+
     use super::*;
 
     #[test]
     fn part_one_returns_incorrect_value() {
-        let values: Vec<usize> = parse_input_lines(1).unwrap();
+        let values: Vec<usize> = day_parse_lines!();
 
         assert_eq!(part1(&values), 1557)
     }
 
     #[test]
     fn part_two_returns_incorrect_value() {
-        let values: Vec<usize> = parse_input_lines(1).unwrap();
+        let values: Vec<usize> = day_parse_lines!();
 
         assert_eq!(part2(&values), 1608)
     }

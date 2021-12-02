@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
-use aoc2021::parse_input_lines;
+use aoc2021::day_parse_lines;
 
 fn main() {
-    let cmds: Vec<MovementCommand> = parse_input_lines(2).unwrap();
+    let cmds: Vec<MovementCommand> = day_parse_lines!();
 
     let (horizontal, depth) = part1(&cmds);
 
@@ -87,7 +87,7 @@ mod test {
 
     #[test]
     fn part_one_returns_incorrect_value() {
-        let cmds: Vec<MovementCommand> = parse_input_lines(2).unwrap();
+        let cmds: Vec<MovementCommand> = day_parse_lines!();
         let tup = part1(&cmds);
 
         assert_eq!((1970, 916), tup)
@@ -95,7 +95,7 @@ mod test {
 
     #[test]
     fn part_two_returns_incorrect_value() {
-        let cmds: Vec<MovementCommand> = parse_input_lines(2).unwrap();
+        let cmds: Vec<MovementCommand> = day_parse_lines!();
         let tup = part2(&cmds);
 
         assert_eq!((1970, 1000556, 916), tup)

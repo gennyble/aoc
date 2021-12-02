@@ -7,12 +7,44 @@ use std::{
     str::FromStr,
 };
 
+#[macro_export]
+macro_rules! day_input {
+    () => {
+        input(from_source_file(file!())).unwrap()
+    };
+}
+
+#[macro_export]
+macro_rules! day_parse {
+    () => {
+        aoc2021::parse_input(aoc2021::from_source_file(file!())).unwrap()
+    };
+}
+
+#[macro_export]
+macro_rules! day_parse_lines {
+    () => {
+        aoc2021::parse_input_lines(aoc2021::from_source_file(file!())).unwrap()
+    };
+}
+
 fn input_path(day: usize) -> Result<String, AdventError> {
     if day == 0 || day > 25 {
         Err(AdventError::InvalidDay { day })
     } else {
         Ok(format!("input/day{}", day))
     }
+}
+
+pub fn from_source_file(fname: &'static str) -> usize {
+    PathBuf::from(fname)
+        .file_stem()
+        .unwrap()
+        .to_string_lossy()
+        .strip_prefix("day")
+        .unwrap()
+        .parse()
+        .unwrap()
 }
 
 pub fn input(day: usize) -> Result<String, AdventError> {
