@@ -1,6 +1,4 @@
-use std::str::FromStr;
-
-use aoc2021::day_parse_lines;
+use aoc2021::{day_parse_lines, MovementCommand, MovementDirection};
 
 fn main() {
     let cmds: Vec<MovementCommand> = day_parse_lines!();
@@ -22,9 +20,9 @@ fn main() {
 fn part1(cmds: &[MovementCommand]) -> (isize, isize) {
     cmds.iter()
         .fold((0, 0), |(horizontal, depth), command| match command.dir {
-            Direction::Forward => (horizontal + command.units, depth),
-            Direction::Up => (horizontal, depth - command.units),
-            Direction::Down => (horizontal, depth + command.units),
+            MovementDirection::Forward => (horizontal + command.units, depth),
+            MovementDirection::Up => (horizontal, depth - command.units),
+            MovementDirection::Down => (horizontal, depth + command.units),
         })
 }
 
@@ -32,53 +30,13 @@ fn part2(cmds: &[MovementCommand]) -> (isize, isize, isize) {
     cmds.iter().fold(
         (0, 0, 0),
         |(horizontal, depth, aim), command| match command.dir {
-            Direction::Forward => (horizontal + command.units, command.units * aim + depth, aim),
-            Direction::Up => (horizontal, depth, aim - command.units),
-            Direction::Down => (horizontal, depth, aim + command.units),
+            MovementDirection::Forward => {
+                (horizontal + command.units, command.units * aim + depth, aim)
+            }
+            MovementDirection::Up => (horizontal, depth, aim - command.units),
+            MovementDirection::Down => (horizontal, depth, aim + command.units),
         },
     )
-}
-
-struct MovementCommand {
-    pub dir: Direction,
-    pub units: isize,
-}
-
-impl FromStr for MovementCommand {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.split_once(' ') {
-            Some((direction, units)) => {
-                let dir = direction.parse()?;
-                let units = units
-                    .parse()
-                    .map_err(|e| format!("Faield to parse '{}' as units: {}", units, e))?;
-
-                Ok(Self { dir, units })
-            }
-            None => Err(format!("String '{}' does not contain a space", s)),
-        }
-    }
-}
-
-enum Direction {
-    Forward,
-    Down,
-    Up,
-}
-
-impl FromStr for Direction {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "forward" => Ok(Self::Forward),
-            "up" => Ok(Self::Up),
-            "down" => Ok(Self::Down),
-            _ => Err(format!("'{}' is not a valid direction", s)),
-        }
-    }
 }
 
 #[cfg(test)]

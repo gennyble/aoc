@@ -28,14 +28,16 @@ macro_rules! day_parse_lines {
     };
 }
 
-fn input_path(day: usize) -> Result<String, AdventError> {
-    if day == 0 || day > 25 {
-        Err(AdventError::InvalidDay { day })
-    } else {
-        Ok(format!("input/day{}", day))
-    }
-}
-
+/// There are three unwraps here, tread lightly. Prefer to call one of the
+/// macros in this crate rather than this function directly.
+///
+/// This function expects a path with a file stem of `day$num` where `$num` is
+/// the day number.
+///
+/// # Panics
+/// - If the provided path has no file stem
+/// - If the file stem doesn't start `day`
+/// - If the stem - the `day` prefix does not parse into a number
 pub fn from_source_file(fname: &'static str) -> usize {
     PathBuf::from(fname)
         .file_stem()
@@ -45,6 +47,14 @@ pub fn from_source_file(fname: &'static str) -> usize {
         .unwrap()
         .parse()
         .unwrap()
+}
+
+fn input_path(day: usize) -> Result<String, AdventError> {
+    if day == 0 || day > 25 {
+        Err(AdventError::InvalidDay { day })
+    } else {
+        Ok(format!("input/day{}", day))
+    }
 }
 
 pub fn input(day: usize) -> Result<String, AdventError> {
@@ -151,6 +161,49 @@ impl fmt::Display for AdventError {
                     )
                 }
             }
+        }
+    }
+}
+
+/// A struct to parse day two's input into.
+pub struct MovementCommand {
+    pub dir: MovementDirection,
+    pub units: isize,
+}
+
+impl FromStr for MovementCommand {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.split_once(' ') {
+            Some((direction, units)) => {
+                let dir = direction.parse()?;
+                let units = units
+                    .parse()
+                    .map_err(|e| format!("Faield to parse '{}' as units: {}", units, e))?;
+
+                Ok(Self { dir, units })
+            }
+            None => Err(format!("String '{}' does not contain a space", s)),
+        }
+    }
+}
+
+pub enum MovementDirection {
+    Forward,
+    Down,
+    Up,
+}
+
+impl FromStr for MovementDirection {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "forward" => Ok(Self::Forward),
+            "up" => Ok(Self::Up),
+            "down" => Ok(Self::Down),
+            _ => Err(format!("'{}' is not a valid direction", s)),
         }
     }
 }
