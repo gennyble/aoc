@@ -11,6 +11,8 @@ fn main() {
 
 #[derive(Debug, Clone)]
 struct DiagnosticReport {
+    /// Number stored as Least Significant Bit first! Challenge speaks in
+    /// Most Significant first.
     bin: Vec<String>,
     bin_len: usize,
 }
@@ -79,6 +81,7 @@ impl FromStr for DiagnosticReport {
         let len = raw.lines().next().unwrap().len();
 
         Ok(Self {
+            /// Beware: From MSB (least on right) to LSB (least on left)
             bin: raw.lines().map(|s| s.chars().rev().collect()).collect(),
             bin_len: len,
         })
