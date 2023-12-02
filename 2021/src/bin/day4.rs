@@ -1,5 +1,4 @@
 #![feature(stmt_expr_attributes)]
-#![feature(drain_filter)]
 
 use std::str::FromStr;
 
@@ -59,10 +58,18 @@ impl BingoGame {
                 board.drawn(draw);
             }
 
-            let won: Vec<Board> = self
-                .boards
-                .drain_filter(|board| board.check_won())
-                .collect();
+            // gen 2023-12-02: back in 2021 there was a drain_filter feature.
+            // this code was making r-a mad and I had to fix it, so I did this...
+            let mut lost: Vec<Board> = vec![];
+            let mut won: Vec<Board> = vec![];
+            for board in self.boards.drain(..) {
+                if board.check_won() {
+                    won.push(board);
+                } else {
+                    lost.push(board);
+                }
+            }
+            self.boards = lost;
 
             println!("Board count {}", self.boards.len());
             if self.boards.len() == 0 {

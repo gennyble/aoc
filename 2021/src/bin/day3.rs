@@ -1,5 +1,3 @@
-#![feature(drain_filter)]
-
 use core::str::FromStr;
 use std::cmp::Ordering;
 
